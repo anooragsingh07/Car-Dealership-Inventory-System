@@ -1,15 +1,22 @@
 const bcrypt = require('bcrypt');
 const userRepository = require('../repositories/userRepository');
 
-async function register(req, res) {
-  const { email, password } = req.body;
+function validateRegisterInput({ email, password }) {
+  const errors = [];
+  if (!email) errors.push('Email is required');
+  if (!password) errors.push('Password is required');
+  return errors;
+}
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+async function register(req, res) {
+  const errors = validateRegisterInput(req.body);
+  if (errors.length > 0) {
+    return res.status(400).json({ error: errors.join(', ') });
   }
 
-  const existing = await userRepository.findByEmail(email);
-  if (existing) {
+  const { email, password } = req.body;
+
+  if (await userRepository.emailExists(email)) {
     return res.status(409).json({ error: 'Email already registered' });
   }
 
