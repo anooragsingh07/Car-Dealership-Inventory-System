@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 
 function validateRegisterInput({ email, password }) {
@@ -26,4 +27,26 @@ async function register(req, res) {
   return res.status(201).json({ id: user.id, email: user.email, role: user.role });
 }
 
-module.exports = { register };
+async function login(req, res) {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  const user = await userRepository.findByEmail(email);
+
+  if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+
+  return res.status(200).json({ token });
+}
+
+module.exports = { register, login };
