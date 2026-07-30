@@ -10,10 +10,10 @@ async function emailExists(email) {
   return rows.length > 0;
 }
 
-async function createUser({ email, passwordHash, role }) {
+async function createUser({ name, email, passwordHash, role }) {
   const { rows } = await pool.query(
-    'INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role, created_at',
-    [email, passwordHash, role]
+    'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role, created_at',
+    [name, email, passwordHash, role]
   );
   return rows[0];
 }

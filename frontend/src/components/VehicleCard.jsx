@@ -2,13 +2,13 @@ export default function VehicleCard({ vehicle, onPurchase }) {
   const outOfStock = vehicle.quantity === 0;
 
   return (
-    <div className="bg-paper border border-steel/20 rounded-lg p-4 shadow-sm">
-      <h3 className="text-ink font-bold text-lg">{vehicle.make} {vehicle.model}</h3>
-      <p className="text-steel text-sm">{vehicle.category}</p>
-      <p className="font-mono text-ink text-xl my-2">
-        ${Number(vehicle.price).toLocaleString()}
+    <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <h3 className="text-gray-900 font-bold text-lg">{vehicle.make} {vehicle.model}</h3>
+      <p className="text-gray-500 text-sm">{vehicle.category}</p>
+      <p className="text-gray-900 text-xl my-2">
+        ₹{Number(vehicle.price).toLocaleString('en-IN')}
       </p>
-      <p className="font-mono text-sm text-steel mb-3">
+      <p className="text-sm text-gray-500 mb-3">
         Qty: {vehicle.quantity}
       </p>
       <button
@@ -16,8 +16,8 @@ export default function VehicleCard({ vehicle, onPurchase }) {
         disabled={outOfStock}
         className={`w-full py-2 px-4 rounded font-semibold transition ${
           outOfStock
-            ? 'bg-steel/20 text-steel cursor-not-allowed'
-            : 'bg-brass text-white hover:brightness-110 cursor-pointer'
+            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            : 'bg-gray-900 text-white hover:bg-gray-800 cursor-pointer'
         }`}
       >
         Purchase

@@ -2,29 +2,34 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 
-function validateRegisterInput({ email, password }) {
-  const errors = [];
-  if (!email) errors.push('Email is required');
-  if (!password) errors.push('Password is required');
-  return errors;
-}
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function register(req, res) {
-  const errors = validateRegisterInput(req.body);
-  if (errors.length > 0) {
-    return res.status(400).json({ error: errors.join(', ') });
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
   }
 
-  const { email, password } = req.body;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
 
   if (await userRepository.emailExists(email)) {
     return res.status(409).json({ error: 'Email already registered' });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await userRepository.createUser({ email, passwordHash, role: 'user' });
+  const user = await userRepository.createUser({ name, email, passwordHash, role: 'user' });
 
-  return res.status(201).json({ id: user.id, email: user.email, role: user.role });
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  const { password_hash: _, ...userData } = user;
+  return res.status(201).json({ token, user: userData });
 }
 
 async function login(req, res) {
@@ -37,16 +42,17 @@ async function login(req, res) {
   const user = await userRepository.findByEmail(email);
 
   if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
 
   const token = jwt.sign(
     { userId: user.id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: '2h' }
+    { expiresIn: '7d' }
   );
 
-  return res.status(200).json({ token });
+  const { password_hash: _, ...userData } = user;
+  return res.status(200).json({ token, user: userData });
 }
 
 module.exports = { register, login };

@@ -33,18 +33,24 @@ async function createVehicle(req, res) {
   const { make, model, category, price, quantity } = req.body;
   const vehicle = await vehicleRepository.create({ make, model, category, price, quantity });
 
-  return res.status(201).json(vehicle);
+  return res.status(201).json({ vehicle });
 }
 
 async function listVehicles(req, res) {
   const vehicles = await vehicleRepository.findAll();
-  return res.status(200).json(vehicles);
+  return res.status(200).json({ vehicles });
+}
+
+async function getVehicleById(req, res) {
+  const vehicle = await vehicleRepository.findById(req.params.id);
+  if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+  return res.status(200).json({ vehicle });
 }
 
 async function searchVehicles(req, res) {
   const { make, model, category, minPrice, maxPrice } = req.query;
   const vehicles = await vehicleRepository.search({ make, model, category, minPrice, maxPrice });
-  return res.status(200).json(vehicles);
+  return res.status(200).json({ vehicles });
 }
 
 async function updateVehicle(req, res) {
@@ -53,12 +59,13 @@ async function updateVehicle(req, res) {
     return res.status(400).json({ error: errors.join(', ') });
   }
 
-  const vehicle = await vehicleRepository.update(req.params.id, req.body);
+  const vehicle = await vehicleRepository.findById(req.params.id);
   if (!vehicle) {
     return res.status(404).json({ error: 'Vehicle not found' });
   }
 
-  return res.status(200).json(vehicle);
+  const updated = await vehicleRepository.update(req.params.id, req.body);
+  return res.status(200).json({ vehicle: updated });
 }
 
 async function deleteVehicle(req, res) {
@@ -81,7 +88,7 @@ async function purchaseVehicle(req, res) {
     return res.status(409).json({ error: 'Vehicle is sold out' });
   }
 
-  return res.status(200).json(vehicle);
+  return res.status(200).json({ vehicle });
 }
 
 async function restockVehicle(req, res) {
@@ -96,12 +103,13 @@ async function restockVehicle(req, res) {
     return res.status(404).json({ error: 'Vehicle not found' });
   }
 
-  return res.status(200).json(vehicle);
+  return res.status(200).json({ vehicle });
 }
 
 module.exports = {
   createVehicle,
   listVehicles,
+  getVehicleById,
   searchVehicles,
   updateVehicle,
   deleteVehicle,

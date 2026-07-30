@@ -1,51 +1,68 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 
-async function request(path, { method, body, token } = {}) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${BASE}${path}`, {
-    method: method || 'GET',
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Request failed');
-  return data;
+function getToken() {
+  return localStorage.getItem('token')
 }
 
-export function register(email, password) {
-  return request('/auth/register', { method: 'POST', body: { email, password } });
+async function request(path, options = {}) {
+  const token = getToken()
+  const headers = { 'Content-Type': 'application/json', ...options.headers }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(`${BASE}${path}`, { ...options, headers })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Request failed')
+  return data
 }
 
 export function login(email, password) {
-  return request('/auth/login', { method: 'POST', body: { email, password } });
+  return request('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  })
 }
 
-export function getVehicles(token) {
-  return request('/vehicles', { token });
+export function register(name, email, password) {
+  return request('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password })
+  })
 }
 
-export function searchVehicles(params, token) {
-  const q = new URLSearchParams(params).toString();
-  return request(`/vehicles/search?${q}`, { token });
+export function getVehicles() {
+  return request('/vehicles')
 }
 
-export function createVehicle(body, token) {
-  return request('/vehicles', { method: 'POST', body, token });
+export function searchVehicles(params) {
+  const q = new URLSearchParams(params).toString()
+  return request(`/vehicles/search?${q}`)
 }
 
-export function updateVehicle(id, body, token) {
-  return request(`/vehicles/${id}`, { method: 'PUT', body, token });
+export function createVehicle(data) {
+  return request('/vehicles', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 }
 
-export function deleteVehicle(id, token) {
-  return request(`/vehicles/${id}`, { method: 'DELETE', token });
+export function updateVehicle(id, data) {
+  return request(`/vehicles/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  })
 }
 
-export function purchaseVehicle(id, token) {
-  return request(`/vehicles/${id}/purchase`, { method: 'POST', token });
+export function deleteVehicle(id) {
+  return request(`/vehicles/${id}`, { method: 'DELETE' })
 }
 
-export function restockVehicle(id, amount, token) {
-  return request(`/vehicles/${id}/restock`, { method: 'POST', body: { amount }, token });
+export function purchaseVehicle(id) {
+  return request(`/vehicles/${id}/purchase`, { method: 'POST' })
+}
+
+export function restockVehicle(id, amount) {
+  return request(`/vehicles/${id}/restock`, {
+    method: 'POST',
+    body: JSON.stringify({ amount })
+  })
 }

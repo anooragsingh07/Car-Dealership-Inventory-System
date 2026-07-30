@@ -1,43 +1,50 @@
-import { useState, useEffect } from 'react';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import Dashboard from './components/Dashboard';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import Dashboard from './pages/Dashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import NotFound from './pages/NotFound'
 
-export default function App() {
-  const [user, setUser] = useState(null);
-  const [showRegister, setShowRegister] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) {
-      try { setUser(JSON.parse(stored)); } catch { localStorage.removeItem('user'); }
-    }
-  }, []);
-
-  function handleLogin(userData) {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-  }
+function AppContent() {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
   function handleLogout() {
-    setUser(null);
-    localStorage.removeItem('user');
+    logout()
+    navigate('/login')
   }
 
-  if (!user) {
-    return (
-      <div>
-        {showRegister ? <RegisterForm onLogin={handleLogin} /> : <LoginForm onLogin={handleLogin} />}
-        <p className="text-center text-sm text-steel mt-4">
-          {showRegister ? (
-            <>Already have an account? <button onClick={() => setShowRegister(false)} className="text-brass underline cursor-pointer">Login</button></>
-          ) : (
-            <>Don't have an account? <button onClick={() => setShowRegister(true)} className="text-brass underline cursor-pointer">Register</button></>
-          )}
-        </p>
-      </div>
-    );
-  }
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {user && <Navbar user={user} onLogout={handleLogout} />}
+      <Routes>
+        <Route path="/login" element={user ? <Dashboard /> : <LoginPage />} />
+        <Route path="/register" element={user ? <Dashboard /> : <RegisterPage />} />
+        <Route path="/" element={
+          <ProtectedRoute user={user}>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute user={user} adminOnly>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
+  )
+}
 
-  return <Dashboard user={user} onLogout={handleLogout} />;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
+  )
 }
