@@ -17,7 +17,7 @@ The objective was to build a secure, maintainable, and well-tested inventory man
 * Responsive Single Page Application (SPA)
 * PostgreSQL Database Integration
 * Git Version Control
-* AI-assisted Development with transparent documentation
+* AI-assisted Development
 
 ---
 
@@ -402,31 +402,27 @@ npm test
 
 ## Login
 
-```
-images/login.png
-```
+<img width="1710" height="853" alt="image" src="https://github.com/user-attachments/assets/914b3ed1-25d5-42c6-9d6c-4bf49e526e64" />
+
+## Signup
+
+<img width="1341" height="815" alt="image" src="https://github.com/user-attachments/assets/f3ed8d2c-cd88-4bfb-8fbd-074997ffb09f" />
+
 
 ## Dashboard
 
-```
-images/dashboard.png
-```
+<img width="1535" height="757" alt="image" src="https://github.com/user-attachments/assets/3cdadd12-11b9-40bb-a270-20e53e3bc316" />
+
 
 ## Admin Dashboard
 
-```
-images/admin-dashboard.png
-```
+<img width="1390" height="813" alt="image" src="https://github.com/user-attachments/assets/fe4d02d6-7c9b-41bd-867e-d17af6733943" />
+
 
 ## Vehicle Search
 
-```
-images/search.png
-```
+<img width="1360" height="489" alt="image" src="https://github.com/user-attachments/assets/c8dbfe79-ecbd-49ed-83ce-7934b4ea2289" />
 
-Replace these placeholders with actual screenshots before submission.
-
----
 
 # Live Demo
 
@@ -441,8 +437,6 @@ Backend API
 ```
 Coming Soon
 ```
-
-Replace with deployment URLs if deployed.
 
 ---
 
