@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { getVehicles, createVehicle, updateVehicle, deleteVehicle, restockVehicle } from '../api/client'
+import { getVehicles, createVehicle, updateVehicle, deleteVehicle, restockVehicle, setLowStockThreshold, getLowStockThreshold } from '../api/client'
+import { useLowStock } from '../context/LowStockContext'
 
 export default function AdminDashboard() {
   const [vehicles, setVehicles] = useState([])
@@ -8,9 +9,18 @@ export default function AdminDashboard() {
   const [editId, setEditId] = useState(null)
   const [editData, setEditData] = useState({})
   const [restockAmounts, setRestockAmounts] = useState({})
+  const [threshold, setThreshold] = useState('')
+  const [filter, setFilter] = useState('all')
+  const { refresh } = useLowStock()
+
+  const DEFAULT_THRESHOLD = 5
+
+  const lowStockCount = vehicles.filter(v => v.low_stock).length
+  const visibleVehicles = filter === 'low' ? vehicles.filter(v => v.low_stock) : vehicles
 
   useEffect(() => {
     getVehicles().then(data => { setVehicles(data.vehicles); setLoading(false) })
+    getLowStockThreshold().then(data => setThreshold(String(data.threshold))).catch(() => {})
   }, [])
 
   function handleNewChange(e) {
@@ -22,6 +32,7 @@ export default function AdminDashboard() {
     const data = await createVehicle(newVehicle)
     setVehicles(prev => [data.vehicle, ...prev])
     setNewVehicle({ make: '', model: '', category: '', price: '', quantity: '' })
+    refresh()
   }
 
   function startEdit(v) {
@@ -37,11 +48,13 @@ export default function AdminDashboard() {
     const data = await updateVehicle(id, editData)
     setVehicles(prev => prev.map(v => (v.id === id ? data.vehicle : v)))
     setEditId(null)
+    refresh()
   }
 
   async function handleDelete(id) {
     await deleteVehicle(id)
     setVehicles(prev => prev.filter(v => v.id !== id))
+    refresh()
   }
 
   async function handleRestock(id) {
@@ -50,6 +63,15 @@ export default function AdminDashboard() {
     const data = await restockVehicle(id, Number(amount))
     setVehicles(prev => prev.map(v => (v.id === id ? data.vehicle : v)))
     setRestockAmounts(prev => ({ ...prev, [id]: '' }))
+    refresh()
+  }
+
+  async function handleThresholdSave() {
+    const value = Number(threshold)
+    if (!Number.isInteger(value) || value <= 0) return
+    const data = await setLowStockThreshold(value)
+    setThreshold(String(data.threshold))
+    refresh()
   }
 
   function formatPrice(price) {
@@ -61,6 +83,21 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
         {!loading && <span className="text-sm text-gray-500">{vehicles.length} vehicle{vehicles.length !== 1 ? 's' : ''}</span>}
+      </div>
+
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6 flex flex-wrap items-end gap-2">
+        <div>
+          <label htmlFor="threshold" className="block text-sm font-semibold text-gray-700 mb-1">Low Stock Threshold</label>
+          <input id="threshold" type="number" min="1" placeholder={String(DEFAULT_THRESHOLD)}
+            value={threshold}
+            onChange={e => setThreshold(e.target.value)}
+            className="w-24 border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-gray-900 focus:outline-none focus:border-gray-900 transition" />
+        </div>
+        <button onClick={handleThresholdSave}
+          className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition">
+          Save threshold
+        </button>
+        <p className="text-xs text-gray-500 w-full mt-1">Vehicles with quantity at or below this limit are flagged as low stock.</p>
       </div>
 
       <form onSubmit={handleAdd} className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
@@ -88,8 +125,33 @@ export default function AdminDashboard() {
       ) : vehicles.length === 0 ? (
         <p className="text-gray-500 text-center py-16 text-sm">No vehicles added yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {vehicles.map(v => (
+        <>
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setFilter('all')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                filter === 'all'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+              }`}>
+              All Vehicles
+            </button>
+            <button
+              onClick={() => setFilter('low')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                filter === 'low'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-amber-700 border border-amber-300 hover:bg-amber-50'
+              }`}>
+              Low Stock ({lowStockCount})
+            </button>
+          </div>
+
+          {visibleVehicles.length === 0 ? (
+            <p className="text-gray-500 text-center py-16 text-sm">No low-stock vehicles right now.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {visibleVehicles.map(v => (
             <div key={v.id} className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors flex flex-col">
               <div className="p-4 flex-1">
                 {editId === v.id ? (
@@ -112,6 +174,9 @@ export default function AdminDashboard() {
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{v.category}</span>
                     </div>
                     <p className="text-sm text-gray-500 mb-3">{v.model}</p>
+                    {v.low_stock && v.quantity > 0 && (
+                      <p className="text-xs font-medium text-amber-700 mb-1">Low stock</p>
+                    )}
                     <p className="text-lg font-semibold text-gray-900">{formatPrice(v.price)}</p>
                     <p className="text-sm text-gray-500 mt-1">Quantity: {v.quantity}</p>
                   </>
@@ -146,8 +211,10 @@ export default function AdminDashboard() {
                 )}
               </div>
             </div>
-          ))}
-        </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
