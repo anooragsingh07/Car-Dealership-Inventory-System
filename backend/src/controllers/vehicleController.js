@@ -1,4 +1,5 @@
 const vehicleRepository = require('../repositories/vehicleRepository');
+const settingsRepository = require('../repositories/settingsRepository');
 
 const REQUIRED_FIELDS = ['make', 'model', 'category', 'price', 'quantity'];
 
@@ -39,6 +40,14 @@ async function createVehicle(req, res) {
 async function listVehicles(req, res) {
   const vehicles = await vehicleRepository.findAll();
   return res.status(200).json({ vehicles });
+}
+
+async function lowStockVehicles(req, res) {
+  const [vehicles, threshold] = await Promise.all([
+    vehicleRepository.findLowStock(),
+    settingsRepository.getLowStockThreshold(),
+  ]);
+  return res.status(200).json({ count: vehicles.length, threshold, vehicles });
 }
 
 async function getVehicleById(req, res) {
@@ -110,6 +119,7 @@ module.exports = {
   createVehicle,
   listVehicles,
   getVehicleById,
+  lowStockVehicles,
   searchVehicles,
   updateVehicle,
   deleteVehicle,

@@ -16,3 +16,12 @@ CREATE TABLE IF NOT EXISTS vehicles (
   quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+INSERT INTO settings (key, value)
+VALUES ('low_stock_threshold', '5')
+ON CONFLICT (key) DO NOTHING;
