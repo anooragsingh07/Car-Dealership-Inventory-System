@@ -29,4 +29,19 @@ describe('VehicleCard', () => {
     await userEvent.click(screen.getByRole('button', { name: /purchase/i }));
     expect(onPurchase).toHaveBeenCalledWith(1);
   });
+
+  it('shows a Low stock badge when low_stock is true and quantity > 0', () => {
+    render(<VehicleCard vehicle={{ ...vehicle, quantity: 2, low_stock: true }} onPurchase={() => {}} />);
+    expect(screen.getByText('Low stock')).toBeInTheDocument();
+  });
+
+  it('does not show a Low stock badge when low_stock is false', () => {
+    render(<VehicleCard vehicle={{ ...vehicle, low_stock: false }} onPurchase={() => {}} />);
+    expect(screen.queryByText('Low stock')).not.toBeInTheDocument();
+  });
+
+  it('does not show a Low stock badge when the vehicle is out of stock', () => {
+    render(<VehicleCard vehicle={{ ...vehicle, quantity: 0, low_stock: true }} onPurchase={() => {}} />);
+    expect(screen.queryByText('Low stock')).not.toBeInTheDocument();
+  });
 });
