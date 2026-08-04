@@ -11,8 +11,8 @@ describe('POST /api/vehicles/:id/purchase', () => {
   beforeAll(async () => {
     const hash = await bcrypt.hash('User123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'user') ON CONFLICT (email) DO NOTHING",
-      ['purchase-test@test.com', hash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'user') ON CONFLICT (email) DO NOTHING",
+      ['Purchase Test', 'purchase-test@test.com', hash]
     );
     const res = await request(app)
       .post('/api/auth/login')
@@ -61,6 +61,6 @@ describe('POST /api/vehicles/:id/purchase', () => {
       .post(`/api/vehicles/${vehicleId}/purchase`)
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.quantity).toBe(2);
+    expect(res.body.vehicle.quantity).toBe(2);
   });
 });

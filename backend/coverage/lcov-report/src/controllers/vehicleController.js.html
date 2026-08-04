@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.42% </span>
+                <span class="strong">90.16% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/56</span>
+                <span class='fraction'>55/61</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.87% </span>
+                <span class="strong">90.24% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>37/39</span>
+                <span class='fraction'>37/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.03% </span>
+                <span class="strong">92.72% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/51</span>
+                <span class='fraction'>51/55</span>
             </div>
         
             
@@ -173,7 +173,15 @@
 <a name='L108'></a><a href='#L108'>108</a>
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -217,6 +225,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -233,6 +247,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -283,6 +298,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const vehicleRepository = require('../repositories/vehicleRepository');
 &nbsp;
 const REQUIRED_FIELDS = ['make', 'model', 'category', 'price', 'quantity'];
@@ -318,18 +334,24 @@ async function createVehicle(req, res) {
   const { make, model, category, price, quantity } = req.body;
   const vehicle = await vehicleRepository.create({ make, model, category, price, quantity });
 &nbsp;
-  return res.status(201).json(vehicle);
+  return res.status(201).json({ vehicle });
 }
 &nbsp;
 async function listVehicles(req, res) {
   const vehicles = await vehicleRepository.findAll();
-  return res.status(200).json(vehicles);
+  return res.status(200).json({ vehicles });
+}
+&nbsp;
+async function <span class="fstat-no" title="function not covered" >getVehicleById(</span>req, res) {
+  const vehicle = <span class="cstat-no" title="statement not covered" >await vehicleRepository.findById(req.params.id);</span>
+<span class="cstat-no" title="statement not covered" >  if (!vehicle) <span class="cstat-no" title="statement not covered" >return res.status(404).json({ error: 'Vehicle not found' });</span></span>
+<span class="cstat-no" title="statement not covered" >  return res.status(200).json({ vehicle });</span>
 }
 &nbsp;
 async function searchVehicles(req, res) {
   const { make, model, category, minPrice, maxPrice } = req.query;
   const vehicles = await vehicleRepository.search({ make, model, category, minPrice, maxPrice });
-  return res.status(200).json(vehicles);
+  return res.status(200).json({ vehicles });
 }
 &nbsp;
 async function updateVehicle(req, res) {
@@ -338,12 +360,13 @@ async function updateVehicle(req, res) {
     return res.status(400).json({ error: errors.join(', ') });
   }
 &nbsp;
-  const vehicle = await vehicleRepository.update(req.params.id, req.body);
+  const vehicle = await vehicleRepository.findById(req.params.id);
   if (!vehicle) {
     return res.status(404).json({ error: 'Vehicle not found' });
   }
 &nbsp;
-  return res.status(200).json(vehicle);
+  const updated = await vehicleRepository.update(req.params.id, req.body);
+  return res.status(200).json({ vehicle: updated });
 }
 &nbsp;
 async function deleteVehicle(req, res) {
@@ -366,7 +389,7 @@ async function purchaseVehicle(req, res) {
     return res.status(409).json({ error: 'Vehicle is sold out' });
   }
 &nbsp;
-  return res.status(200).json(vehicle);
+  return res.status(200).json({ vehicle });
 }
 &nbsp;
 async function restockVehicle(req, res) {
@@ -381,12 +404,13 @@ async function restockVehicle(req, res) {
 <span class="cstat-no" title="statement not covered" >    return res.status(404).json({ error: 'Vehicle not found' });</span>
   }
 &nbsp;
-  return res.status(200).json(vehicle);
+  return res.status(200).json({ vehicle });
 }
 &nbsp;
 module.exports = {
   createVehicle,
   listVehicles,
+  getVehicleById,
   searchVehicles,
   updateVehicle,
   deleteVehicle,
@@ -400,7 +424,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-30T04:57:23.999Z
+                at 2026-08-04T17:01:06.013Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

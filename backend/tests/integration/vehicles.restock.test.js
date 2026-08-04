@@ -11,14 +11,14 @@ describe('POST /api/vehicles/:id/restock', () => {
   beforeAll(async () => {
     const adminHash = await bcrypt.hash('Admin123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin') ON CONFLICT (email) DO NOTHING",
-      ['restock-admin@test.com', adminHash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'admin') ON CONFLICT (email) DO NOTHING",
+      ['Restock Admin', 'restock-admin@test.com', adminHash]
     );
 
     const userHash = await bcrypt.hash('User123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'user') ON CONFLICT (email) DO NOTHING",
-      ['restock-user@test.com', userHash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'user') ON CONFLICT (email) DO NOTHING",
+      ['Restock User', 'restock-user@test.com', userHash]
     );
 
     const adminRes = await request(app)
@@ -89,6 +89,6 @@ describe('POST /api/vehicles/:id/restock', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ amount: 5 });
     expect(res.status).toBe(200);
-    expect(res.body.quantity).toBe(8);
+    expect(res.body.vehicle.quantity).toBe(8);
   });
 });

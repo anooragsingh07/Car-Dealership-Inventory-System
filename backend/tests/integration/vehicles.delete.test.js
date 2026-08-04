@@ -11,14 +11,14 @@ describe('DELETE /api/vehicles/:id', () => {
   beforeAll(async () => {
     const adminHash = await bcrypt.hash('Admin123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin') ON CONFLICT (email) DO NOTHING",
-      ['delete-admin@test.com', adminHash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'admin') ON CONFLICT (email) DO NOTHING",
+      ['Delete Admin', 'delete-admin@test.com', adminHash]
     );
 
     const userHash = await bcrypt.hash('User123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'user') ON CONFLICT (email) DO NOTHING",
-      ['delete-user@test.com', userHash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'user') ON CONFLICT (email) DO NOTHING",
+      ['Delete User', 'delete-user@test.com', userHash]
     );
 
     const adminRes = await request(app)

@@ -8,8 +8,8 @@ describe('POST /api/vehicles', () => {
   beforeAll(async () => {
     const hash = await require('bcrypt').hash('Admin123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin') ON CONFLICT (email) DO NOTHING",
-      ['vehicle-admin@test.com', hash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'admin') ON CONFLICT (email) DO NOTHING",
+      ['Vehicle Admin', 'vehicle-admin@test.com', hash]
     );
     const res = await request(app)
       .post('/api/auth/login')
@@ -30,12 +30,12 @@ describe('POST /api/vehicles', () => {
       .send({ make: 'TestMake', model: 'TestModel', category: 'SUV', price: 25000, quantity: 5 });
 
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('id');
-    expect(res.body.make).toBe('TestMake');
-    expect(res.body.model).toBe('TestModel');
-    expect(res.body.category).toBe('SUV');
-    expect(Number(res.body.price)).toBe(25000);
-    expect(res.body.quantity).toBe(5);
+    expect(res.body.vehicle).toHaveProperty('id');
+    expect(res.body.vehicle.make).toBe('TestMake');
+    expect(res.body.vehicle.model).toBe('TestModel');
+    expect(res.body.vehicle.category).toBe('SUV');
+    expect(Number(res.body.vehicle.price)).toBe(25000);
+    expect(res.body.vehicle.quantity).toBe(5);
   });
 
   it('returns 400 when a required field is missing', async () => {

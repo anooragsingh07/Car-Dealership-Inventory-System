@@ -9,8 +9,8 @@ describe('GET /api/vehicles', () => {
   beforeAll(async () => {
     const hash = await bcrypt.hash('Admin123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin') ON CONFLICT (email) DO NOTHING",
-      ['list-test@test.com', hash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'admin') ON CONFLICT (email) DO NOTHING",
+      ['List Test', 'list-test@test.com', hash]
     );
     const res = await request(app)
       .post('/api/auth/login')
@@ -34,8 +34,8 @@ describe('GET /api/vehicles', () => {
       .get('/api/vehicles')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body).toHaveLength(0);
+    expect(Array.isArray(res.body.vehicles)).toBe(true);
+    expect(res.body.vehicles).toHaveLength(0);
   });
 
   it('returns an array of vehicles', async () => {
@@ -47,8 +47,8 @@ describe('GET /api/vehicles', () => {
       .get('/api/vehicles')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThanOrEqual(1);
-    expect(res.body[0]).toHaveProperty('make');
+    expect(Array.isArray(res.body.vehicles)).toBe(true);
+    expect(res.body.vehicles.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.vehicles[0]).toHaveProperty('make');
   });
 });

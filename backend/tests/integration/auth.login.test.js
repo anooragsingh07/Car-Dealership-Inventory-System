@@ -7,8 +7,8 @@ describe('POST /api/auth/login', () => {
   beforeAll(async () => {
     const hash = await bcrypt.hash('Password123', 10);
     await pool.query(
-      'INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) ON CONFLICT (email) DO NOTHING',
-      ['login@test.com', hash, 'user']
+      'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO NOTHING',
+      ['Login User', 'login@test.com', hash, 'user']
     );
   });
 

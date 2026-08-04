@@ -13,13 +13,14 @@ describe('POST /api/auth/register', () => {
   it('creates a user and returns 201 without the password', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ email: 'test@example.com', password: 'Password123' });
+      .send({ name: 'Test User', email: 'test@example.com', password: 'Password123' });
 
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('id');
-    expect(res.body.email).toBe('test@example.com');
-    expect(res.body).not.toHaveProperty('password');
-    expect(res.body).not.toHaveProperty('password_hash');
+    expect(res.body).toHaveProperty('token');
+    expect(res.body.user).toHaveProperty('id');
+    expect(res.body.user.email).toBe('test@example.com');
+    expect(res.body.user).not.toHaveProperty('password');
+    expect(res.body.user).not.toHaveProperty('password_hash');
   });
 
   it('returns 400 when email is missing', async () => {
@@ -33,8 +34,8 @@ describe('POST /api/auth/register', () => {
   });
 
   it('returns 409 when the email is already registered', async () => {
-    await request(app).post('/api/auth/register').send({ email: 'test@example.com', password: 'Password123' });
-    const res = await request(app).post('/api/auth/register').send({ email: 'test@example.com', password: 'Other12345' });
+    await request(app).post('/api/auth/register').send({ name: 'Test User', email: 'test@example.com', password: 'Password123' });
+    const res = await request(app).post('/api/auth/register').send({ name: 'Test User', email: 'test@example.com', password: 'Other12345' });
     expect(res.status).toBe(409);
   });
 });

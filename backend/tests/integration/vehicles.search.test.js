@@ -9,8 +9,8 @@ describe('GET /api/vehicles/search', () => {
   beforeAll(async () => {
     const hash = await bcrypt.hash('Admin123', 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin') ON CONFLICT (email) DO NOTHING",
-      ['search-test@test.com', hash]
+      "INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, 'admin') ON CONFLICT (email) DO NOTHING",
+      ['Search Test', 'search-test@test.com', hash]
     );
     const res = await request(app)
       .post('/api/auth/login')
@@ -43,8 +43,8 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?make=Toyota')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1);
-    expect(res.body[0].make).toBe('Toyota');
+    expect(res.body.vehicles).toHaveLength(1);
+    expect(res.body.vehicles[0].make).toBe('Toyota');
   });
 
   it('filters by model (ILIKE)', async () => {
@@ -52,8 +52,8 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?model=civic')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1);
-    expect(res.body[0].model).toBe('Civic');
+    expect(res.body.vehicles).toHaveLength(1);
+    expect(res.body.vehicles[0].model).toBe('Civic');
   });
 
   it('filters by category', async () => {
@@ -61,8 +61,8 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?category=SUV')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1);
-    expect(res.body[0].category).toBe('SUV');
+    expect(res.body.vehicles).toHaveLength(1);
+    expect(res.body.vehicles[0].category).toBe('SUV');
   });
 
   it('filters by minPrice', async () => {
@@ -70,8 +70,8 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?minPrice=30000')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.length).toBeGreaterThanOrEqual(2);
-    res.body.forEach(v => expect(Number(v.price)).toBeGreaterThanOrEqual(30000));
+    expect(res.body.vehicles.length).toBeGreaterThanOrEqual(2);
+    res.body.vehicles.forEach(v => expect(Number(v.price)).toBeGreaterThanOrEqual(30000));
   });
 
   it('filters by maxPrice', async () => {
@@ -79,8 +79,8 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?maxPrice=23000')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1);
-    expect(res.body[0].make).toBe('Honda');
+    expect(res.body.vehicles).toHaveLength(1);
+    expect(res.body.vehicles[0].make).toBe('Honda');
   });
 
   it('combines multiple filters', async () => {
@@ -88,7 +88,7 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?category=Sedan&minPrice=24000&maxPrice=46000')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(2);
+    expect(res.body.vehicles).toHaveLength(2);
   });
 
   it('returns empty array when no matches', async () => {
@@ -96,6 +96,6 @@ describe('GET /api/vehicles/search', () => {
       .get('/api/vehicles/search?make=NonExistent')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([]);
+    expect(res.body.vehicles).toEqual([]);
   });
 });

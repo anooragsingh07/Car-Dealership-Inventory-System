@@ -1,13 +1,13 @@
 ﻿
 > backend@1.0.0 test:coverage
-> cross-env NODE_ENV=test jest --coverage --forceExit --runInBand
+> cross-env NODE_ENV=test jest --coverage --forceExit --runInBand --testTimeout=30000
 
-node.exe : (node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as 
+node.exe : (node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as 
 aliases for 'verify-full'.
 At line:1 char:1
 + & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: ((node:17620) Wa... 'verify-full'.:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: ((node:12800) Wa... 'verify-full'.:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
@@ -19,7 +19,7 @@ To prepare for this change:
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -29,7 +29,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -39,7 +39,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -49,7 +49,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -59,7 +59,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -69,7 +69,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -79,7 +79,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -89,7 +89,7 @@ To prepare for this change:
 - If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(node:17620) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
+(node:12800) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 
 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq 
 semantics, which have weaker security guarantees.
@@ -102,19 +102,19 @@ See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode de
 -----------------------|---------|----------|---------|---------|-------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------------------|---------|----------|---------|---------|-------------------
-All files              |   96.77 |    90.32 |   96.15 |   97.61 |                   
- src                   |   84.61 |        0 |       0 |   84.61 |                   
-  app.js               |   84.61 |        0 |       0 |   84.61 | 15-16             
+All files              |   93.78 |    85.41 |   88.88 |   94.88 |                   
+ src                   |      80 |        0 |       0 |      80 |                   
+  app.js               |      80 |        0 |       0 |      80 | 12,19-20          
  src/config            |     100 |       50 |     100 |     100 |                   
   db.js                |     100 |       50 |     100 |     100 | 5                 
- src/controllers       |   96.38 |    94.54 |     100 |   97.36 |                   
-  authController.js    |   96.29 |    93.75 |     100 |      96 | 34                
-  vehicleController.js |   96.42 |    94.87 |     100 |   98.03 | 96                
+ src/controllers       |    90.8 |    89.65 |   91.66 |   92.59 |                   
+  authController.js    |    92.3 |    88.23 |     100 |    92.3 | 15,39             
+  vehicleController.js |   90.16 |    90.24 |      90 |   92.72 | 45-47,103         
  src/middleware        |     100 |      100 |     100 |     100 |                   
   authMiddleware.js    |     100 |      100 |     100 |     100 |                   
- src/repositories      |   98.14 |    89.28 |     100 |     100 |                   
+ src/repositories      |   98.14 |    82.14 |     100 |     100 |                   
   userRepository.js    |     100 |      100 |     100 |     100 |                   
-  vehicleRepository.js |   97.82 |    88.46 |     100 |     100 | 33,50,78          
+  vehicleRepository.js |   97.82 |    80.76 |     100 |     100 | 33-57,78          
  src/routes            |     100 |      100 |     100 |     100 |                   
   authRoutes.js        |     100 |      100 |     100 |     100 |                   
   vehicleRoutes.js     |     100 |      100 |     100 |     100 |                   
@@ -123,7 +123,7 @@ All files              |   96.77 |    90.32 |   96.15 |   97.61 |
 Test Suites: 10 passed, 10 total
 Tests:       46 passed, 46 total
 Snapshots:   0 total
-Time:        46.785 s, estimated 51 s
+Time:        59.605 s
 Ran all test suites.
 Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after 
 all tests finished?

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.29% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/27</span>
+                <span class='fraction'>24/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">88.23% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/16</span>
+                <span class='fraction'>15/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/25</span>
+                <span class='fraction'>24/26</span>
             </div>
         
             
@@ -115,24 +115,28 @@
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -141,6 +145,13 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,6 +175,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
@@ -171,29 +183,34 @@
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 &nbsp;
-function validateRegisterInput({ email, password }) {
-  const errors = [];
-  if (!email) errors.push('Email is required');
-  if (!password) errors.push('Password is required');
-  return errors;
-}
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 &nbsp;
 async function register(req, res) {
-  const errors = validateRegisterInput(req.body);
-  if (errors.length &gt; 0) {
-    return res.status(400).json({ error: errors.join(', ') });
+  const { name, email, password } = req.body;
+&nbsp;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
   }
 &nbsp;
-  const { email, password } = req.body;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!emailRegex.test(email)) {
+<span class="cstat-no" title="statement not covered" >    return res.status(400).json({ error: 'Invalid email format' });</span>
+  }
 &nbsp;
   if (await userRepository.emailExists(email)) {
     return res.status(409).json({ error: 'Email already registered' });
   }
 &nbsp;
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await userRepository.createUser({ email, passwordHash, role: 'user' });
+  const user = await userRepository.createUser({ name, email, passwordHash, role: 'user' });
 &nbsp;
-  return res.status(201).json({ id: user.id, email: user.email, role: user.role });
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+&nbsp;
+  const { password_hash: _, ...userData } = user;
+  return res.status(201).json({ token, user: userData });
 }
 &nbsp;
 async function login(req, res) {
@@ -206,16 +223,17 @@ async function login(req, res) {
   const user = await userRepository.findByEmail(email);
 &nbsp;
   if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
 &nbsp;
   const token = jwt.sign(
     { userId: user.id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: '2h' }
+    { expiresIn: '7d' }
   );
 &nbsp;
-  return res.status(200).json({ token });
+  const { password_hash: _, ...userData } = user;
+  return res.status(200).json({ token, user: userData });
 }
 &nbsp;
 module.exports = { register, login };
@@ -226,7 +244,7 @@ module.exports = { register, login };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-30T04:57:23.999Z
+                at 2026-08-04T17:01:06.013Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
