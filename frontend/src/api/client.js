@@ -66,3 +66,18 @@ export function restockVehicle(id, amount) {
     body: JSON.stringify({ amount })
   })
 }
+
+export function getLowStockVehicles() {
+  return request('/vehicles/low-stock')
+}
+
+export function getLowStockThreshold() {
+  return request('/settings/low-stock-threshold')
+}
+
+export function setLowStockThreshold(threshold) {
+  return request('/settings/low-stock-threshold', {
+    method: 'PUT',
+    body: JSON.stringify({ threshold })
+  })
+}

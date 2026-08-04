@@ -3,7 +3,12 @@ export default function VehicleCard({ vehicle, onPurchase }) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
-      <h3 className="text-gray-900 font-bold text-lg">{vehicle.make} {vehicle.model}</h3>
+      <div className="flex items-start justify-between mb-1">
+        <h3 className="text-gray-900 font-bold text-lg">{vehicle.make} {vehicle.model}</h3>
+        {vehicle.low_stock && !outOfStock && (
+          <span className="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Low stock</span>
+        )}
+      </div>
       <p className="text-gray-500 text-sm">{vehicle.category}</p>
       <p className="text-gray-900 text-xl my-2">
         ₹{Number(vehicle.price).toLocaleString('en-IN')}

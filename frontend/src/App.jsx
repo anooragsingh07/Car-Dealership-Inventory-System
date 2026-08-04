@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { LowStockProvider } from './context/LowStockContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
@@ -43,7 +44,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <LowStockProvider>
+          <AppContent />
+        </LowStockProvider>
       </AuthProvider>
     </BrowserRouter>
   )

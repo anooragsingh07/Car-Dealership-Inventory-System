@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { getVehicles, searchVehicles, purchaseVehicle } from '../api/client'
+import { useLowStock } from '../context/LowStockContext'
 
 export default function Dashboard() {
   const [vehicles, setVehicles] = useState([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({ make: '', model: '', category: '', minPrice: '', maxPrice: '' })
+  const { refresh } = useLowStock()
 
   useEffect(() => {
     getVehicles().then(data => { setVehicles(data.vehicles); setLoading(false) })
@@ -38,6 +40,7 @@ export default function Dashboard() {
   async function handlePurchase(id) {
     const data = await purchaseVehicle(id)
     setVehicles(prev => prev.map(v => (v.id === id ? data.vehicle : v)))
+    refresh()
   }
 
   function formatPrice(price) {
@@ -91,6 +94,9 @@ export default function Dashboard() {
                   <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{v.category}</span>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">{v.model}</p>
+                {v.low_stock && v.quantity > 0 && (
+                  <p className="text-xs font-medium text-amber-700 mb-1">Low stock</p>
+                )}
                 <p className="text-lg font-semibold text-gray-900">{formatPrice(v.price)}</p>
                 <p className="text-sm text-gray-500 mt-1">Quantity: {v.quantity}</p>
               </div>
