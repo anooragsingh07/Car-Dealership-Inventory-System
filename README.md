@@ -214,8 +214,16 @@ The backend business logic was developed following this workflow.
 
 # API Base URL
 
+Development:
+
 ```
 http://localhost:4000/api
+```
+
+Production:
+
+```
+https://car-dealership-inventory-system-sccn.onrender.com/api
 ```
 
 ---
@@ -270,6 +278,12 @@ PORT=4000
 
 ```
 VITE_API_URL=http://localhost:4000/api
+```
+
+For deployed builds on Vercel, set:
+
+```
+VITE_API_URL=https://car-dealership-inventory-system-sccn.onrender.com/api
 ```
 
 ---
@@ -429,13 +443,13 @@ npm test
 Frontend
 
 ```
-Coming Soon
+https://car-dealership-inventory-system-fm1mjudbx.vercel.app/
 ```
 
 Backend API
 
 ```
-Coming Soon
+https://car-dealership-inventory-system-sccn.onrender.com
 ```
 
 ---
