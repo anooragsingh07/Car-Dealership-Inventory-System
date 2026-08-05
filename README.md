@@ -218,6 +218,8 @@ The backend business logic was developed following this workflow.
 http://localhost:4000/api
 ```
 
+> Production: `https://car-dealership-inventory-system-sccn.onrender.com/api`
+
 ---
 
 # API Endpoints
@@ -271,6 +273,8 @@ PORT=4000
 ```
 VITE_API_URL=http://localhost:4000/api
 ```
+
+> Production (Vercel env var): `VITE_API_URL=https://car-dealership-inventory-system-sccn.onrender.com/api`
 
 ---
 
@@ -429,13 +433,13 @@ npm test
 Frontend
 
 ```
-Coming Soon
+https://car-dealership-inventory-system-jk1.vercel.app
 ```
 
 Backend API
 
 ```
-Coming Soon
+https://car-dealership-inventory-system-sccn.onrender.com/api
 ```
 
 ---
